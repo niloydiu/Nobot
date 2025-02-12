@@ -1,0 +1,11 @@
+.theme-toggle {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.theme-icon {
+  width: 24px;
+  height: 24px;
+}

@@ -21,6 +21,40 @@ const ContextProvider = (props) => {
     setShowResult(false);
   };
 
+  //   const onSend = async (prompt) => {
+  //     setResultData("");
+  //     setLoading(true);
+  //     setShowResult(true);
+  //     let response;
+  //     if (prompt !== undefined) {
+  //       response = await run(prompt);
+  //       setRecentPrompt(prompt);
+  //     } else {
+  //       setPreviousPrompt((prev) => [...prev, input]);
+  //       setRecentPrompt(input);
+  //       response = await run(input);
+  //     }
+
+  //     let responseArray = response.split("**");
+  //     let newResponse = "";
+  //     for (let i = 0; i < responseArray.length; i++) {
+  //       if (i === 0 || i % 2 !== 1) {
+  //         newResponse += responseArray[i];
+  //       } else {
+  //         newResponse += '<span class="semibold">' + responseArray[i] + "</span>";
+  //       }
+  //     }
+  //     // let newResponse2 = newResponse.split("*").join("<br />");
+  //     let newResponse2 = newResponse;
+  //     let newResponseArray = newResponse2.split(" ");
+  //     for (let i = 0; i < newResponseArray.length; i++) {
+  //       const nextWord = newResponseArray[i];
+  //       delayPara(i, nextWord + " ");
+  //     }
+  //     setLoading(false);
+  //     setInput("");
+  //   };
+
   const onSend = async (prompt) => {
     setResultData("");
     setLoading(true);
@@ -41,11 +75,15 @@ const ContextProvider = (props) => {
       if (i === 0 || i % 2 !== 1) {
         newResponse += responseArray[i];
       } else {
-        newResponse += "<b>" + responseArray[i] + "</b>";
+        newResponse += '<span class="semibold">' + responseArray[i] + "</span>";
       }
     }
-    let newResponse2 = newResponse.split("*").join("</br>");
-    let newResponseArray = newResponse2.split(" ");
+    // Remove stray asterisks
+    newResponse = newResponse.replace(/\*/g, "");
+    // Convert newline characters to <br /> tags for proper line breaks
+    newResponse = newResponse.replace(/\n/g, "<br />");
+
+    let newResponseArray = newResponse.split(" ");
     for (let i = 0; i < newResponseArray.length; i++) {
       const nextWord = newResponseArray[i];
       delayPara(i, nextWord + " ");

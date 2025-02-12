@@ -12,6 +12,15 @@
   font-size: 22px;
   padding: 20px;
   color: #585858;
+  cursor: pointer;
+}
+.main .nav span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.main .nav span span {
+  font-size: 15px;
 }
 
 .main .nav img {
@@ -145,6 +154,8 @@
   display: flex;
   align-items: start;
   gap: 20px;
+  position: relative;
+  padding-bottom: 50px;
 }
 
 .loader {
@@ -184,7 +195,7 @@
 
 /* Loader message */
 .loader::after {
-  content: "GemN is generating your response…";
+  content: "Nobot is generating your response…";
   display: block;
   text-align: center;
   margin-top: 10px;
@@ -212,4 +223,66 @@
   .search-box div {
     gap: 5px;
   }
+}
+
+.semibold {
+  font-weight: 500;
+}
+
+.copy-btn {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: #f2f2f2;
+}
+
+.copy-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: transparent;
+  border: none;
+  color: #489adf;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#company {
+  border-radius: 0;
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
+}
+
+#company_response {
+  border-radius: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.dark .nav p,
+.dark .nav a span {
+  color: #fff !important;
+}
+
+#copywright {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }

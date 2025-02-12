@@ -55,6 +55,16 @@
 .sidebar .recent-entry:hover {
   background-color: #e2e6eb;
 }
+.sidebar .recent-entry#logo:hover {
+  background-color: transparent !important;
+}
+.sidebar .recent-entry img {
+  transition: transform 0.3s ease;
+}
+
+.sidebar .recent-entry:hover img {
+  transform: scale(1.1);
+}
 
 .sidebar .bottom {
   display: flex;
@@ -72,4 +82,61 @@
   .sidebar {
     display: none;
   }
+}
+
+.bottom-item.recent-entry img {
+  width: 20px !important;
+  height: 20px !important;
+  align-self: center;
+}
+
+.theme-toggle-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.theme-toggle-btn {
+  background-color: transparent;
+  border: 1px solid #0086f4;
+  color: #0086f4;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: #e2e6eb;
+}
+
+.sidebar.dark,
+.sidebar.dark p,
+.sidebar.dark .recent-entry p {
+  color: #fff !important;
+}
+
+.sidebar.dark .new-chat {
+  background-color: #3a3f47; /* A darker background for dark mode */
+  color: #fff; /* White text for better contrast */
+}
+
+.sidebar.dark .bottom-item.recent-entry:hover {
+  background-color: #505050; /* Darker background on hover in dark mode */
+}
+
+.sidebar .theme-switch {
+  width: 60px; /* fixed width, adjust as needed */
+  text-align: center;
+  padding: 10px; /* adjust padding if required */
+  box-sizing: border-box;
+}
+
+/* If you also want to ensure that its hover background doesn’t change width */
+.sidebar.dark .theme-switch:hover {
+  background-color: #505050; /* your chosen hover color */
+}
+
+.sidebar.dark .recent .recent-entry:hover {
+  background-color: #505050;
 }
