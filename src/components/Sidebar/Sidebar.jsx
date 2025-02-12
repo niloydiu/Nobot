@@ -175,7 +175,7 @@ const Sidebar = () => {
           className="bottom-item recent-entry theme-switch"
           onClick={toggleTheme}
         >
-          {isDark ? <p>Dark</p> : <p>Light</p>}
+          {isDark ? <p>Light</p> : <p>Dark</p>}
         </div>
         <div id="logo" className="bottom-item recent-entry">
           <a href="https://portfolio-nu-ten-59.vercel.app/" target="_blank">
