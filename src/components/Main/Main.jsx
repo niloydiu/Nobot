@@ -34,7 +34,7 @@ const Main = () => {
             obot
           </p>
 
-          <a href="">
+          <a href="https://portfolio-nu-ten-59.vercel.app/" target="_blank">
             <span>
               <img src={assets.user_icon} width={40} height={40} alt="" />
               <span>User</span>
