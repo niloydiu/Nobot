@@ -283,6 +283,7 @@
 
 #copywright {
   text-decoration: none;
-  color: inherit;
+  color: blue;
+  font-weight: 500;
   cursor: pointer;
 }
