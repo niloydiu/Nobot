@@ -178,7 +178,7 @@ const Sidebar = () => {
           {isDark ? <p>Light</p> : <p>Dark</p>}
         </div>
         <div id="logo" className="bottom-item recent-entry">
-          <a href="https://portfolio-nu-ten-59.vercel.app/" target="_blank">
+          <a href="https://niloykm.vercel.app/" target="_blank">
             <img src={assets.nlogo} alt="logo" />
           </a>
         </div>

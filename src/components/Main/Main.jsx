@@ -34,7 +34,7 @@ const Main = () => {
             obot
           </p>
 
-          <a href="https://portfolio-nu-ten-59.vercel.app/" target="_blank">
+          <a href="https://niloykm.vercel.app/" target="_blank">
             <span>
               <img src={assets.user_icon} width={40} height={40} alt="" />
               <span>User</span>
@@ -143,7 +143,7 @@ const Main = () => {
               cross-check it&apos;s responses. |{" "}
               <a
                 id="copywright"
-                href="https://portfolio-nu-ten-59.vercel.app/"
+                href="https://niloykm.vercel.app/"
                 target="_blank"
               >
                 &copy;niloy
