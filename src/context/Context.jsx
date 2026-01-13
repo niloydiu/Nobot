@@ -9,6 +9,7 @@ const ContextProvider = (props) => {
   const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState("");
+  const [extended, setExtended] = useState(true);
 
   const delayPara = (index, nextWord) => {
     setTimeout(function () {
@@ -75,15 +76,27 @@ const ContextProvider = (props) => {
       if (i === 0 || i % 2 !== 1) {
         newResponse += responseArray[i];
       } else {
-        newResponse += '<span class="semibold">' + responseArray[i] + "</span>";
+        newResponse += '<b class="bold-text">' + responseArray[i] + "</b>";
       }
     }
-    // Remove stray asterisks
-    newResponse = newResponse.replace(/\*/g, "");
-    // Convert newline characters to <br /> tags for proper line breaks
-    newResponse = newResponse.replace(/\n/g, "<br />");
+    
+    // Process code blocks
+    let codeProcessed = newResponse.split("```");
+    let finalResponse = "";
+    for (let i = 0; i < codeProcessed.length; i++) {
+      if (i % 2 === 1) {
+        finalResponse += '<pre class="code-block"><code>' + codeProcessed[i] + '</code></pre>';
+      } else {
+        finalResponse += codeProcessed[i];
+      }
+    }
 
-    let newResponseArray = newResponse.split(" ");
+    // Convert newlines to breaks
+    finalResponse = finalResponse.replace(/\n/g, "<br />");
+    // Remove stray asterisks
+    finalResponse = finalResponse.replace(/\*/g, "");
+
+    let newResponseArray = finalResponse.split(" ");
     for (let i = 0; i < newResponseArray.length; i++) {
       const nextWord = newResponseArray[i];
       delayPara(i, nextWord + " ");
@@ -103,6 +116,8 @@ const ContextProvider = (props) => {
     input,
     setInput,
     newChat,
+    extended,
+    setExtended,
   };
   return (
     <context.Provider value={contextValue}>{props.children}</context.Provider>

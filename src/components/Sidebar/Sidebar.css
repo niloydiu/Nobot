@@ -1,142 +1,281 @@
-.sidebar {
-  min-height: 100vh;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #f0f4f9;
-  padding: 25px 15px;
+:root {
+  --sidebar-width-extended: 280px;
+  --sidebar-width-collapsed: 72px;
+  --transition-speed: 0.3s;
 }
 
-.sidebar img {
-  width: 20px;
+.sidebar {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--bg-lighter);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  transition: width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.02);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar.extended {
+  width: var(--sidebar-width-extended);
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-width-collapsed);
+}
+
+/* Sidebar Sections */
+.sidebar .top {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px;
 }
 
 .sidebar .menu {
-  display: block;
-  margin-left: 10px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: background var(--transition-speed);
+  opacity: 0.6;
 }
 
+.sidebar .menu:hover {
+  background-color: var(--border);
+  opacity: 1;
+}
+
+/* New Chat Button */
 .sidebar .new-chat {
-  margin-top: 50px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 15px;
-  background-color: #e6eaf1;
-  border-radius: 50px;
-  font-size: 14px;
-  color: grey;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: 12px;
+  color: white;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition-speed) ease;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  white-space: nowrap;
 }
 
+.sidebar.collapsed .new-chat {
+  width: 44px;
+  padding: 12px;
+  justify-content: center;
+}
+
+.sidebar .new-chat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+}
+
+.sidebar .new-chat img {
+  width: 20px;
+  filter: brightness(0) invert(1);
+}
+
+/* Recent Section */
 .sidebar .recent {
   display: flex;
   flex-direction: column;
-  animation: fadeIn 1.5s;
+  margin-top: 24px;
+  animation: fadeIn 0.4s ease;
+  flex: 1;
+  overflow: hidden;
 }
 
-.sidebar .recent-title {
-  margin-top: 30px;
-  margin-bottom: 20px;
+.recent-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  opacity: 0.8;
 }
 
-.sidebar .recent-entry {
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.recent-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.recent-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.recent-entry {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
-  padding-right: 40px;
-  border-radius: 50px;
-  color: #282828;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--text-dark);
   cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.sidebar .recent-entry:hover {
-  background-color: #e2e6eb;
-}
-.sidebar .recent-entry#logo:hover {
-  background-color: transparent !important;
-}
-.sidebar .recent-entry img {
-  transition: transform 0.3s ease;
+.recent-entry:hover {
+  background-color: var(--border);
+  transform: translateX(4px);
 }
 
-.sidebar .recent-entry:hover img {
-  transform: scale(1.1);
+.recent-entry img {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
 }
 
+.recent-entry p {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-recent {
+  font-size: 12px;
+  color: var(--text-light);
+  text-align: center;
+  padding: 20px 0;
+  font-style: italic;
+}
+
+/* Bottom Items */
 .sidebar .bottom {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 
-.sidebar .bottom-item {
+.bottom-item {
   display: flex;
   align-items: center;
-  padding-right: 10px;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
   cursor: pointer;
+  transition: background 0.2s;
+  color: var(--text-dark);
 }
 
-@media (max-width: 600px) {
+.bottom-item:hover {
+  background-color: var(--border);
+}
+
+.bottom-item img {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+}
+
+.bottom-item p {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Footer & Logo */
+.sidebar-footer {
+  margin-top: 12px;
+}
+
+.logo-container {
+  padding: 8px;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.logo-container a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text-dark);
+}
+
+.logo-container img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Dark Mode Overrides */
+.sidebar.dark {
+  background-color: var(--bg-dark-secondary);
+  border-right-color: var(--border);
+}
+
+.sidebar.dark .recent-entry:hover,
+.sidebar.dark .bottom-item:hover,
+.sidebar.dark .menu:hover {
+  background-color: var(--bg-dark-tertiary);
+}
+
+.sidebar.dark .logo-text {
+  background: linear-gradient(135deg, #818cf8 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
   .sidebar {
-    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(-100%);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar.extended {
+    transform: translateX(0);
+    width: 280px;
+  }
+  
+  .sidebar.collapsed {
+    transform: translateX(-100%);
   }
 }
 
-.bottom-item.recent-entry img {
-  width: 20px !important;
-  height: 20px !important;
-  align-self: center;
-}
-
-.theme-toggle-container {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-}
-
-.theme-toggle-btn {
-  background-color: transparent;
-  border: 1px solid #0086f4;
-  color: #0086f4;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.theme-toggle-btn:hover {
-  background-color: #e2e6eb;
-}
-
-.sidebar.dark,
-.sidebar.dark p,
-.sidebar.dark .recent-entry p {
-  color: #fff !important;
-}
-
-.sidebar.dark .new-chat {
-  background-color: #3a3f47; /* A darker background for dark mode */
-  color: #fff; /* White text for better contrast */
-}
-
-.sidebar.dark .bottom-item.recent-entry:hover {
-  background-color: #505050; /* Darker background on hover in dark mode */
-}
-
-.sidebar .theme-switch {
-  width: 60px; /* fixed width, adjust as needed */
-  text-align: center;
-  padding: 10px; /* adjust padding if required */
-  box-sizing: border-box;
-}
-
-/* If you also want to ensure that its hover background doesn’t change width */
-.sidebar.dark .theme-switch:hover {
-  background-color: #505050; /* your chosen hover color */
-}
-
-.sidebar.dark .recent .recent-entry:hover {
-  background-color: #505050;
-}

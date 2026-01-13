@@ -102,9 +102,12 @@ import { context } from "../../context/Context";
 import "./Sidebar.css";
 
 const Sidebar = () => {
-  const [isDark, setIsDark] = useState(false);
-  const [extended, setExtended] = useState(false);
-  const { onSend, previousPrompt, setRecentPrompt, newChat } =
+  const [isDark, setIsDark] = useState(() => {
+    // Persist theme preference
+    return localStorage.getItem("theme") === "dark";
+  });
+  
+  const { onSend, previousPrompt, setRecentPrompt, newChat, extended, setExtended } =
     useContext(context);
 
   const loadPrompt = async (prompt) => {
@@ -113,74 +116,80 @@ const Sidebar = () => {
   };
 
   const toggleTheme = () => {
-    setIsDark((prev) => !prev);
+    setIsDark((prev) => {
+      const newVal = !prev;
+      localStorage.setItem("theme", newVal ? "dark" : "light");
+      return newVal;
+    });
   };
 
   useEffect(() => {
-    const sidebar = document.querySelector(".sidebar");
     if (isDark) {
-      document.body.style.backgroundColor = "#333"; // Dark body background
-      document.body.style.color = "#fff"; // Light body text
-      document.body.classList.add("dark"); // Add dark class globally
-      if (sidebar) {
-        sidebar.style.backgroundColor = "#2c2c2c"; // Dark sidebar background
-        sidebar.style.color = "#fff";
-        sidebar.classList.add("dark");
-      }
+      document.body.classList.add("dark");
     } else {
-      document.body.style.backgroundColor = "#fff"; // Light body background
-      document.body.style.color = "#000"; // Dark body text
       document.body.classList.remove("dark");
-      if (sidebar) {
-        sidebar.style.backgroundColor = "#f0f4f9"; // Light sidebar background
-        sidebar.style.color = "#000";
-        sidebar.classList.remove("dark");
-      }
     }
   }, [isDark]);
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${extended ? "extended" : "collapsed"} ${isDark ? "dark" : ""}`}>
       <div className="top">
-        <img
-          onClick={() => setExtended((prev) => !prev)}
-          className="menu"
-          src={assets.menu_icon}
-          alt="menu_icon"
-        />
+        <div className="menu-container">
+          <img
+            onClick={() => setExtended((prev) => !prev)}
+            className="menu"
+            src={assets.menu_icon}
+            alt="menu_icon"
+          />
+        </div>
+        
         <div onClick={() => newChat()} className="new-chat">
           <img src={assets.plus_icon} alt="plus_icon" />
           {extended ? <p>New Chat</p> : null}
         </div>
-        {extended ? (
+
+        {extended && (
           <div className="recent">
-            <p className="recent-title">Recent</p>
-            {previousPrompt.map((item, index) => (
-              <div
-                className="recent-entry"
-                key={index}
-                onClick={() => loadPrompt(item)}
-              >
-                <img src={assets.message_icon} alt="message_icon" />
-                <p>{item.slice(0, 20)}</p>
-              </div>
-            ))}
+            <p className="recent-title">Recent Conversations</p>
+            <div className="recent-list">
+              {previousPrompt.length > 0 ? (
+                previousPrompt.slice().reverse().map((item, index) => (
+                  <div
+                    className="recent-entry"
+                    key={index}
+                    onClick={() => loadPrompt(item)}
+                    title={item}
+                  >
+                    <img src={assets.message_icon} alt="message_icon" />
+                    <p>{item}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="no-recent">No recent chats</p>
+              )}
+            </div>
           </div>
-        ) : null}
+        )}
       </div>
 
       <div className="bottom">
-        {/* When clicked, the settings area toggles the theme */}
-        <div
-          className="bottom-item recent-entry theme-switch"
-          onClick={toggleTheme}
-        >
-          {isDark ? <p>Light</p> : <p>Dark</p>}
+        <div className="bottom-item recent-entry" onClick={toggleTheme}>
+          <img src={isDark ? assets.bulb_icon : assets.setting_icon} alt="theme_icon" />
+          {extended ? <p>{isDark ? "Light Mode" : "Dark Mode"}</p> : null}
         </div>
-        <div id="logo" className="bottom-item recent-entry">
-          <a href="https://niloykm.vercel.app/" target="_blank">
-            <img src={assets.nlogo} alt="logo" />
-          </a>
+        
+        <div className="bottom-item recent-entry">
+          <img src={assets.question_icon} alt="help_icon" />
+          {extended ? <p>Help & Support</p> : null}
+        </div>
+
+        <div className="sidebar-footer">
+          <div id="logo" className="logo-container">
+            <a href="https://niloykm.vercel.app/" target="_blank" rel="noopener noreferrer">
+              <img src={assets.nlogo} alt="logo" />
+              {extended && <span className="logo-text">Nobot v2.0</span>}
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -1,23 +1,86 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: "Montserrat", serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-#root {
-  min-height: 100vh;
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+  --primary-light: #e0e7ff;
+  --secondary: #ff6b6b;
+  --accent: #06b6d4;
+  --bg-light: #f8fafc;
+  --bg-lighter: #ffffff;
+  --text-dark: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --success: #10b981;
+  --warning: #f59e0b;
+  
+  --bg-dark: #0f172a;
+  --bg-dark-secondary: #1e293b;
+  --bg-dark-tertiary: #334155;
+  --text-dark-light: #f1f5f9;
+  --text-dark-muted: #cbd5e1;
+}
+
+body.dark {
+  --bg-light: #0f172a;
+  --bg-lighter: #1e293b;
+  --text-dark: #f1f5f9;
+  --text-light: #cbd5e1;
+  --border: #334155;
+}
+
+html, body {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Global Improvements */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.bold-text {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.code-block {
+  background-color: var(--bg-dark-secondary);
+  color: #e2e8f0;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 12px 0;
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+  font-size: 14px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+.dark .code-block {
+  background-color: #0f172a;
+}
+
+/* Base Layout */
+.app-layout {
   display: flex;
-  animation: fadeIn 1.5s;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-light);
+  transition: background-color 0.3s ease;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: row; /* Still row, but sidebar is fixed/absolute */
   }
 }
