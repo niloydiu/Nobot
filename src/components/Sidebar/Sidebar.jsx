@@ -2,8 +2,8 @@ import { useContext, useState } from "react";
 import { context } from "../../context/Context";
 import { 
   Plus, MessageSquare, Search, Pin, FolderPlus, Folder, Trash, Edit2, 
-  Settings, Check, X, ShieldAlert, Sparkles, LogOut, ChevronDown, 
-  ChevronRight, MoreVertical, Star, HelpCircle, Download
+  Settings, Check, X, ShieldAlert, Sparkles, LogOut, Star, HelpCircle, 
+  Download, Moon, Sun, Menu
 } from "lucide-react";
 import "./Sidebar.css";
 
@@ -27,7 +27,9 @@ const Sidebar = () => {
     setExtended,
     user,
     handleGoogleLogin,
-    handleLogout
+    handleLogout,
+    isDark,
+    setIsDark
   } = useContext(context);
 
   const [newFolderName, setNewFolderName] = useState("");
@@ -37,13 +39,11 @@ const Sidebar = () => {
   const [activeMenuId, setActiveMenuId] = useState(null);
 
   const filteredConversations = conversations.filter((c) => {
-    // 1. Search Query match
     if (searchQuery.trim()) {
       const matchSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         c.messages.some(m => m.content.toLowerCase().includes(searchQuery.toLowerCase()));
       if (!matchSearch) return false;
     }
-    // 2. Folder filter
     if (selectedFolder === "pinned") {
       return c.pinned;
     } else if (selectedFolder !== "all") {
@@ -95,18 +95,33 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`sidebar ${extended ? "extended" : "collapsed"}`}>
-      {/* Header with New Chat */}
-      <div className="sidebar-header">
-        <button className="new-chat-btn" onClick={() => createNewConversation()}>
-          <Plus size={18} />
-          {extended && <span>New Chat</span>}
-        </button>
-      </div>
+    <>
+      {/* Mobile background overlay when sidebar is open */}
+      {extended && <div className="sidebar-overlay" onClick={() => setExtended(false)}></div>}
 
-      {extended && (
-        <>
-          {/* User Section */}
+      <div className={`sidebar ${extended ? "extended" : "collapsed"}`}>
+        {/* Toggle button always visible inside sidebar */}
+        <div className="sidebar-toggle-header">
+          <button className="toggle-sidebar-btn" onClick={() => setExtended(!extended)} title="Toggle Sidebar">
+            <Menu size={20} />
+          </button>
+          {extended && <span className="sidebar-brand-name">Nobot Workspace</span>}
+        </div>
+
+        {/* New Chat Button */}
+        <div className="sidebar-header">
+          <button className="new-chat-btn" onClick={() => {
+            createNewConversation();
+            // Auto close drawer on mobile after creating new chat
+            if (window.innerWidth <= 768) setExtended(false);
+          }}>
+            <Plus size={18} />
+            {extended && <span>New Chat</span>}
+          </button>
+        </div>
+
+        {/* User Card */}
+        {extended && (
           <div className="sidebar-user-section">
             {user ? (
               <div className="user-card">
@@ -128,19 +143,23 @@ const Sidebar = () => {
               </button>
             )}
           </div>
+        )}
 
-          {/* Search bar */}
+        {/* Search Box */}
+        {extended && (
           <div className="search-box">
             <Search size={16} className="search-icon" />
             <input
               type="text"
-              placeholder="Search chat history..."
+              placeholder="Search chats..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+        )}
 
-          {/* Folder & Category Toggle */}
+        {/* Folders & Categories */}
+        {extended && (
           <div className="folders-section">
             <div className="section-title">
               <span>Categories</span>
@@ -178,133 +197,164 @@ const Sidebar = () => {
               ))}
             </div>
           </div>
-        </>
-      )}
-
-      {/* Conversations List */}
-      <div className="conv-history-list">
-        {extended && <p className="history-title">Conversations</p>}
-        {filteredConversations.length > 0 ? (
-          filteredConversations.map((conv) => {
-            const isEditing = editingConvId === conv.id;
-            const isActive = activeConversationId === conv.id;
-
-            return (
-              <div 
-                key={conv.id} 
-                className={`history-item ${isActive ? "active" : ""} ${conv.pinned ? "pinned" : ""}`}
-                onClick={() => !isEditing && setActiveConversationId(conv.id)}
-              >
-                <MessageSquare size={16} className="msg-icon" />
-                
-                {isEditing ? (
-                  <div className="rename-input-wrapper">
-                    <input
-                      type="text"
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      onClick={(e) => e.stopPropagation()}
-                      onKeyDown={(e) => e.key === "Enter" && handleSaveRename(conv.id, e)}
-                      autoFocus
-                    />
-                    <button onClick={(e) => handleSaveRename(conv.id, e)}>
-                      <Check size={12} />
-                    </button>
-                    <button onClick={(e) => { e.stopPropagation(); setEditingConvId(null); }}>
-                      <X size={12} />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <span className="conv-title">{conv.title}</span>
-                    
-                    {extended && (
-                      <div className="item-actions">
-                        <button 
-                          className={`pin-btn ${conv.pinned ? "is-pinned" : ""}`} 
-                          onClick={(e) => { e.stopPropagation(); togglePinConversation(conv.id); }}
-                          title={conv.pinned ? "Unpin Chat" : "Pin Chat"}
-                        >
-                          <Pin size={12} />
-                        </button>
-                        
-                        <div className="menu-dropdown-wrapper">
-                          <button 
-                            className="more-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveMenuId(activeMenuId === conv.id ? null : conv.id);
-                            }}
-                          >
-                            <MoreVertical size={12} />
-                          </button>
-
-                          {activeMenuId === conv.id && (
-                            <div className="dropdown-menu glass-panel">
-                              <button onClick={(e) => handleStartRename(conv, e)}>
-                                <Edit2 size={12} />
-                                <span>Rename</span>
-                              </button>
-                              <div className="dropdown-submenu">
-                                <span className="sub-header">Move to:</span>
-                                <button onClick={(e) => { e.stopPropagation(); moveConversationToFolder(conv.id, ""); setActiveMenuId(null); }}>
-                                  <span>Uncategorized</span>
-                                </button>
-                                {folders.map((f, i) => (
-                                  <button key={i} onClick={(e) => { e.stopPropagation(); moveConversationToFolder(conv.id, f); setActiveMenuId(null); }}>
-                                    <span>{f}</span>
-                                  </button>
-                                ))}
-                              </div>
-                              <button onClick={(e) => handleExportChat(conv, "md", e)}>
-                                <Download size={12} />
-                                <span>Export MD</span>
-                              </button>
-                              <button onClick={(e) => handleExportChat(conv, "txt", e)}>
-                                <Download size={12} />
-                                <span>Export TXT</span>
-                              </button>
-                              <button 
-                                className="delete" 
-                                onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); setActiveMenuId(null); }}
-                              >
-                                <Trash size={12} />
-                                <span>Delete</span>
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            );
-          })
-        ) : (
-          extended && <p className="no-convs">No conversations found</p>
         )}
-      </div>
 
-      {/* Folder creation Modal */}
-      {showFolderModal && (
-        <div className="folder-modal-overlay">
-          <div className="folder-modal glass-panel">
-            <h3>Create New Category</h3>
-            <input
-              type="text"
-              placeholder="Category name..."
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-            />
-            <div className="modal-actions">
-              <button className="cancel-btn" onClick={() => setShowFolderModal(false)}>Cancel</button>
-              <button className="confirm-btn" onClick={handleCreateFolder}>Create</button>
+        {/* Conversation List */}
+        <div className="conv-history-list">
+          {extended && <p className="history-title">Conversations</p>}
+          {filteredConversations.length > 0 ? (
+            filteredConversations.map((conv) => {
+              const isEditing = editingConvId === conv.id;
+              const isActive = activeConversationId === conv.id;
+
+              return (
+                <div 
+                  key={conv.id} 
+                  className={`history-item ${isActive ? "active" : ""} ${conv.pinned ? "pinned" : ""}`}
+                  onClick={() => {
+                    if (!isEditing) {
+                      setActiveConversationId(conv.id);
+                      if (window.innerWidth <= 768) setExtended(false); // Auto close drawer on mobile
+                    }
+                  }}
+                  title={conv.title}
+                >
+                  <MessageSquare size={16} className="msg-icon" />
+                  
+                  {isEditing ? (
+                    <div className="rename-input-wrapper">
+                      <input
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.key === "Enter" && handleSaveRename(conv.id, e)}
+                        autoFocus
+                      />
+                      <button onClick={(e) => handleSaveRename(conv.id, e)}>
+                        <Check size={12} />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); setEditingConvId(null); }}>
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      {extended && <span className="conv-title">{conv.title}</span>}
+                      
+                      {extended && (
+                        <div className="item-actions">
+                          <button 
+                            className={`pin-btn ${conv.pinned ? "is-pinned" : ""}`} 
+                            onClick={(e) => { e.stopPropagation(); togglePinConversation(conv.id); }}
+                            title={conv.pinned ? "Unpin" : "Pin"}
+                          >
+                            <Pin size={12} />
+                          </button>
+                          
+                          <div className="menu-dropdown-wrapper">
+                            <button 
+                              className="more-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveMenuId(activeMenuId === conv.id ? null : conv.id);
+                              }}
+                            >
+                              <MoreVertical size={12} />
+                            </button>
+
+                            {activeMenuId === conv.id && (
+                              <div className="dropdown-menu glass-panel">
+                                <button onClick={(e) => handleStartRename(conv, e)}>
+                                  <Edit2 size={12} />
+                                  <span>Rename</span>
+                                </button>
+                                <div className="dropdown-submenu">
+                                  <span className="sub-header">Move to:</span>
+                                  <button onClick={(e) => { e.stopPropagation(); moveConversationToFolder(conv.id, ""); setActiveMenuId(null); }}>
+                                    <span>Uncategorized</span>
+                                  </button>
+                                  {folders.map((f, i) => (
+                                    <button key={i} onClick={(e) => { e.stopPropagation(); moveConversationToFolder(conv.id, f); setActiveMenuId(null); }}>
+                                      <span>{f}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                                <button onClick={(e) => handleExportChat(conv, "md", e)}>
+                                  <Download size={12} />
+                                  <span>Export MD</span>
+                                </button>
+                                <button onClick={(e) => handleExportChat(conv, "txt", e)}>
+                                  <Download size={12} />
+                                  <span>Export TXT</span>
+                                </button>
+                                <button 
+                                  className="delete" 
+                                  onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); setActiveMenuId(null); }}
+                                >
+                                  <Trash size={12} />
+                                  <span>Delete</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            extended && <p className="no-convs">No conversations</p>
+          )}
+        </div>
+
+        {/* Bottom Utility Items */}
+        <div className="sidebar-bottom-utilities">
+          <button 
+            className="bottom-utility-btn" 
+            onClick={() => setIsDark(!isDark)}
+            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            {extended && <span>{isDark ? "Light Mode" : "Dark Mode"}</span>}
+          </button>
+          
+          <button 
+            className="bottom-utility-btn"
+            onClick={() => {
+              createNewConversation("Productivity Help");
+              setActiveConversationId(conversations[0]?.id || "");
+              if (window.innerWidth <= 768) setExtended(false);
+            }}
+            title="Help & Support"
+          >
+            <HelpCircle size={16} />
+            {extended && <span>Help & Support</span>}
+          </button>
+        </div>
+
+        {/* Folder creation Modal */}
+        {showFolderModal && (
+          <div className="folder-modal-overlay">
+            <div className="folder-modal glass-panel">
+              <h3>Create New Category</h3>
+              <input
+                type="text"
+                placeholder="Category name..."
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+              />
+              <div className="modal-actions">
+                <button className="cancel-btn" onClick={() => setShowFolderModal(false)}>Cancel</button>
+                <button className="confirm-btn" onClick={handleCreateFolder}>Create</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 
