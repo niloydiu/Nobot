@@ -129,6 +129,9 @@ const Main = () => {
     stopGeneration,
     editAndResend,
     handleFeedback,
+    togglePinConversation,
+    renameConversation,
+    deleteConversation,
     user,
     quotaUsed,
     apiKeyOverride,
@@ -398,6 +401,46 @@ const Main = () => {
               <option value="gemini-2.5-pro">Gemini 2.5 Pro (Expert)</option>
             </select>
           </div>
+
+          {/* Active Chat controls directly in the main header */}
+          {activeConv && (
+            <div className="active-chat-header-actions glass-panel">
+              <span className="active-chat-hdr-title" title={activeConv.title}>{activeConv.title}</span>
+              
+              <button 
+                className={`hdr-action-btn ${activeConv.pinned ? "pinned" : ""}`}
+                onClick={() => togglePinConversation(activeConv.id)}
+                title={activeConv.pinned ? "Unpin Chat" : "Pin Chat"}
+              >
+                <Pin size={13} className={activeConv.pinned ? "star-pinned-icon" : ""} />
+              </button>
+
+              <button 
+                className="hdr-action-btn"
+                onClick={() => {
+                  const newTitle = prompt("Rename conversation:", activeConv.title);
+                  if (newTitle && newTitle.trim()) {
+                    renameConversation(activeConv.id, newTitle.trim());
+                  }
+                }}
+                title="Rename Chat"
+              >
+                <Edit2 size={13} />
+              </button>
+
+              <button 
+                className="hdr-action-btn delete-btn"
+                onClick={() => {
+                  if (confirm("Delete this conversation?")) {
+                    deleteConversation(activeConv.id);
+                  }
+                }}
+                title="Delete Chat"
+              >
+                <Trash size={13} />
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="nav-right">
